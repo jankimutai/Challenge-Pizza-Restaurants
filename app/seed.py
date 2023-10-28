@@ -1,5 +1,5 @@
 
-from random import randint, choice,random
+from random import randint, choice
 
 from faker import Faker
 
@@ -14,8 +14,8 @@ with app.app_context():
     PizzaRestaurant.query.delete()
     print("Seeding Restaurants \U0001F374")
     restaurant_names = [
-    "GARDEN CHINESE",
-    "ME. NICK'S",
+    "Sottocasa NYC",
+    "PizzArte",
     "SABOR LATINO RESTAURANT",
     "$1.25 PIZZA",
     "1001 NIGHTS CAFE",
@@ -30,26 +30,28 @@ with app.app_context():
     
     print("Seeding Pizza \U0001F355")
     pizza_names = [
-    "Cheese",
-    "Pepperoni",
-    "Margherita",
-    "Hawaiian",
-    "Meat Lovers",
-    "Veggie",
-    "BBQ Chicken",
-    "Buffalo Chicken",
-    "Supreme",
-    "White Pizza"
+        "Cheese",
+        "Pepperoni",
+        "Margherita",
+        "Hawaiian",
+        "Meat Lovers",
+        "Veggie",
+        "BBQ Chicken",
+        "Buffalo Chicken",
+        "Supreme",
+        "White Pizza"
     ]
+    ingredients = ["mozzarella cheese", "pizza sauce", "olive oil","buffalo sauce","pepperoni","ham"]
     for name in pizza_names:
-        pizza = Pizza(name=name, ingredients=fake.sentence())
+        pizza = Pizza(name=name, ingredients=",".join(ingredients))
         db.session.add(pizza)
 
     print("Seeding Pizza\U0001F355Restaurants\U0001F374")
 
     pizza_ids = [pizza.id for pizza in Pizza.query.all()]
-    for restaurant in Restaurant.query.all():
-        pizza_restaurant = PizzaRestaurant(price = randint(7,30),pizza_id = choice(pizza_ids),restaurant_id = restaurant.id)
+    restaurant_ids = [restaurant.id for restaurant in Restaurant.query.all()]
+    for _ in range(40):
+        pizza_restaurant = PizzaRestaurant(price = randint(1,30),pizza_id = choice(pizza_ids),restaurant_id = choice(pizza_ids))
         db.session.add(pizza_restaurant)
     db.session.commit()
     print("Done Seeding \U0001F44D")
