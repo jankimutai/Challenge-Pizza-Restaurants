@@ -52,7 +52,18 @@ class RestaurantResourceById(Resource):
             return make_response(jsonify({"message": "Restaurant deleted Successfully"},204))
         else:
             return {"error": "Restaurant not found"}, 404
+class PizzasResource(Resource):
+    def get(self):
+        pizzas = Pizza.query.all()
 
+        pizza_dict = [{
+            "id":pizza.id,
+            "name":pizza.name,
+            "ingredients":pizza.ingredients
+        }for pizza in pizzas]
+        response = make_response(jsonify(pizza_dict),200)
+        return response
+api.add_resource(PizzasResource,"/pizzas")
 api.add_resource(RestaurantResourceById,'/restaurants/<int:id>')
 api.add_resource(RestaurantResource,'/restaurants')
 if __name__ == '__main__':
