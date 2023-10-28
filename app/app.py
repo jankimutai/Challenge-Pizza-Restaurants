@@ -2,8 +2,13 @@ from flask import request, session,jsonify,make_response
 from flask_restful import Resource
 from config import db,app,api
 from models import db, Pizza, Restaurant, PizzaRestaurant
-
-
+class Home(Resource):
+    def get(self):
+        response = make_response(jsonify({
+            "message":"Pizza Restaurant API",
+        }))
+        return response
+api.add_resource(Home,"/")
 class RestaurantResource(Resource):
     def get(self):
         restaurants = Restaurant.query.all()
@@ -36,6 +41,18 @@ class RestaurantResourceById(Resource):
             return response
         else:
             return {"error": "Restaurant not found"}, 404
+    def delete(self,id):
+        restaurant= Restaurant.query.filter_by(id=id).first()
+        if restaurant:
+            restaurant_pizzas = PizzaRestaurant.query.filter_by(restaurant_id = id).all()
+            for rest in restaurant_pizzas:
+                db.session.delete(rest)
+            db.session.delete(restaurant)
+            db.session.commit()
+            return make_response(jsonify({"message": "Restaurant deleted Successfully"},204))
+        else:
+            return {"error": "Restaurant not found"}, 404
+
 api.add_resource(RestaurantResourceById,'/restaurants/<int:id>')
 api.add_resource(RestaurantResource,'/restaurants')
 if __name__ == '__main__':

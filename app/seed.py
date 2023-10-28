@@ -50,7 +50,7 @@ with app.app_context():
 
     pizza_ids = [pizza.id for pizza in Pizza.query.all()]
     restaurant_ids = [restaurant.id for restaurant in Restaurant.query.all()]
-    for _ in range(40):
+    for _ in range(30):
         pizza_restaurant = PizzaRestaurant(price = randint(1,30),pizza_id = choice(pizza_ids),restaurant_id = choice(pizza_ids))
         db.session.add(pizza_restaurant)
     db.session.commit()
